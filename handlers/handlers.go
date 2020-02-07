@@ -10,6 +10,7 @@ import (
 
 type user struct {
 	Name     string `json:"name"`
+	e_mail   string `json:"e_mail"`
 	Password string `json:"password"`
 }
 

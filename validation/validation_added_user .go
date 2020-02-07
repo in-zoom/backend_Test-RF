@@ -1,6 +1,7 @@
 package validation
 
 import (
+	"Backend_task_RF/CreateTable"
 	"database/sql"
 	"errors"
 	_ "github.com/lib/pq"
@@ -39,10 +40,12 @@ func ValidateNameUser(addedUserName string, db *sql.DB) (nameCat string, err err
 		return "", err
 	}
 	if userNameFromExisting == "" {
+		table.CreateTable()
 		return addUserName, nil
 	} else {
 		return "", errors.New("Имя" + " " + userNameFromExisting + " " + "уже используется")
 	}
+
 }
 
 func prepareName(imputUserName string) (outputUserName string) {
