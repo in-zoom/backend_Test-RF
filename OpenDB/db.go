@@ -44,7 +44,7 @@ func createTable() (err error) {
 	return nil
 }
 
-func AddNewUser(userName string) (err error) {
+func AddNewUser(userName, PasswordUser string) (err error) {
 	//db := login.Init()
 	ins := "INSERT INTO the_users (user_name) VALUES ($1)"
 	_, err = db.Exec(ins, userName)
