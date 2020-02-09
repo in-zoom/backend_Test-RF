@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"Backend_task_RF/login"
+	"Backend_task_RF/OpenDB"
 	"Backend_task_RF/validation"
 	"encoding/json"
 	"github.com/julienschmidt/httprouter"
@@ -10,7 +10,8 @@ import (
 
 type user struct {
 	Name     string `json:"name"`
-	e_mail   string `json:"e_mail"`
+	Email    string `json:"email"`
+	Login    string `json:"login"`
 	Password string `json:"password"`
 }
 
@@ -26,12 +27,18 @@ func AddNewUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		responseError(w, 400, err)
 		return
 	}
-	resultNameUser, err := validation.ValidateNameUser(addedUser.Name, login.Init())
+
+	db, err := DB.Open()
+	if err != nil {
+		responseError(w, 500, err)
+		return
+	}
+	resultNameUser, err := validation.ValidateNameUser(addedUser.Name, db)
 	if err != nil {
 		responseError(w, 400, err)
 		return
 	}
-	err = addNewUser(resultNameUser)
+	err = DB.AddNewUser(resultNameUser)
 	if err != nil {
 		responseError(w, 500, err)
 		return
