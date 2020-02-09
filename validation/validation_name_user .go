@@ -1,15 +1,12 @@
 package validation
 
 import (
-	"database/sql"
 	"errors"
-	_ "github.com/lib/pq"
 	"regexp"
 	"strings"
 )
 
-func ValidateNameUser(UserName string, db *sql.DB) (resultNameUser string, err error) {
-	var rows *sql.Rows
+func ValidateNameUser(UserName string) (resultNameUser string, err error) {
 	addUserName := prepareName(UserName)
 
 	if addUserName == "" {
@@ -21,29 +18,7 @@ func ValidateNameUser(UserName string, db *sql.DB) (resultNameUser string, err e
 	if matched == false || err != nil {
 		return "", errors.New("Имя не может содержать цифры, знаки пунктуации, символы ")
 	}
-
-	query := "SELECT -- FROM -- WHERE -- = " + " " + "'" + addUserName + "'"
-	rows, err = db.Query(query)
-
-	if err != nil {
-		return "", err
-	}
-	defer rows.Close()
-	var userNameFromExisting string
-	for rows.Next() {
-		if err = rows.Scan(&userNameFromExisting); err != nil {
-			return "", err
-		}
-	}
-	if err = rows.Err(); err != nil {
-		return "", err
-	}
-	if userNameFromExisting == "" {
-		return addUserName, nil
-	} else {
-		return "", errors.New("Имя" + " " + userNameFromExisting + " " + "уже используется")
-	}
-
+	return addUserName, nil
 }
 
 func prepareName(imputUserName string) (outputUserName string) {

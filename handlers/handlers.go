@@ -2,12 +2,11 @@ package handlers
 
 import (
 	"Backend_task_RF/OpenDB"
-	"Backend_task_RF/PrepareUserPassword"
 	"Backend_task_RF/validation"
 	"encoding/json"
 	"fmt"
+	"github.com/julienschmidt/httprouter"
 	"net/http"
-    "github.com/julienschmidt/httprouter"
 )
 
 type user struct {
@@ -35,20 +34,26 @@ func AddNewUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		responseError(w, 500, err)
 		return
 	}
-	resultNameUser, err := validation.ValidateNameUser(addedUser.Name, db)
+	resultNameUser, err := validation.ValidateNameUser(addedUser.Name)
 	if err != nil {
 		responseError(w, 400, err)
 		return
 	}
 
-	resultPasswordUser, err := password.PreparationPasswordUser(addedUser.Password)
+	resultEmailUser, err := validation.ValidateEmailUser(addedUser.Email, db)
+	if err != nil {
+		responseError(w, 400, err)
+		return
+	}
+
+	resultPasswordUser, err := validation.ValidatePasswordUsers(addedUser.Password)
 	fmt.Println(resultPasswordUser)
 	if err != nil {
 		responseError(w, 400, err)
 		return
 	}
 
-	err = DB.AddNewUser(resultNameUser, resultPasswordUser)
+	err = DB.AddNewUser(resultNameUser, resultEmailUser, resultPasswordUser)
 	if err != nil {
 		responseError(w, 500, err)
 		return

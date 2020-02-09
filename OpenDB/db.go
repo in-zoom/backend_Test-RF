@@ -3,16 +3,16 @@ package DB
 import (
 	"database/sql"
 	"fmt"
-	"github.com/joho/godotenv"
 	"log"
 	"os"
+    "github.com/joho/godotenv"
 )
 
 var db *sql.DB
 var err error
 
 func Open() (*sql.DB, error) {
-	db := connect()
+	db = connect()
 	err = createTable()
 	return db, err
 }
@@ -36,7 +36,7 @@ func connect() *sql.DB {
 }
 
 func createTable() (err error) {
-	ins := "CREATE TABLE IF NOT EXISTS the_users (id SERIAL, user_name VARCHAR, e_mail VARCHAR, login VARCHAR, password VARCHAR)"
+	ins := "CREATE TABLE IF NOT EXISTS the_users (id SERIAL, user_name VARCHAR, email VARCHAR, login VARCHAR, password VARCHAR)"
 	_, err = db.Exec(ins)
 	if err != nil {
 		return err
@@ -44,10 +44,9 @@ func createTable() (err error) {
 	return nil
 }
 
-func AddNewUser(userName, PasswordUser string) (err error) {
-	//db := login.Init()
-	ins := "INSERT INTO the_users (user_name) VALUES ($1)"
-	_, err = db.Exec(ins, userName)
+func AddNewUser(userName, EmailUser, PasswordUser string) (err error) {
+	ins := "INSERT INTO the_users (user_name, email, password) VALUES ($1, $2, $3)"
+	_, err = db.Exec(ins, userName, EmailUser, PasswordUser)
 	if err != nil {
 		return err
 	}
