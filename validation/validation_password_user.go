@@ -1,12 +1,12 @@
 package validation
 
 import (
-	"crypto/md5"
-	"encoding/hex"
-	"errors"
 	"github.com/joho/godotenv"
-	"os"
+	"encoding/hex"
+	"crypto/md5"
 	"strings"
+	"errors"
+	"os"
 )
 
 func ValidatePasswordUsers(addPassword string) (resultPasswordUser string, err error) {
@@ -14,11 +14,9 @@ func ValidatePasswordUsers(addPassword string) (resultPasswordUser string, err e
 	if addUserPassword == "" {
 		return "", errors.New("Не задан пароль")
 	}
-	/*pattern := `^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).*$`
-	matched, err := regexp.Match(pattern, []byte(addUserPassword))
-	if matched == false || err != nil {
-		return "", errors.New("Пароль должен соcтоять из цифр и букв ")
-	}*/
+	if len(addUserPassword) < 5 {
+		return "", errors.New("Пароль должен состоять хотя бы из 6 символов")
+	}
 	hashPassword, err := hashPasswordUser(addUserPassword)
 	if err != nil {
 		return "", err

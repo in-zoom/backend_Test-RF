@@ -1,11 +1,11 @@
 package validation
 
 import (
+  _ "github.com/lib/pq"
 	"database/sql"
-	"errors"
-	_ "github.com/lib/pq"
-	"regexp"
 	"strings"
+	"errors"
+	"regexp"
 )
 
 func ValidateEmailUser(EmailUser string, db *sql.DB) (resultEmailUser string, err error) {

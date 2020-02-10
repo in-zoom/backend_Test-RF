@@ -1,9 +1,9 @@
 package validation
 
 import (
+	"strings"
 	"errors"
 	"regexp"
-	"strings"
 )
 
 func ValidateNameUser(UserName string) (resultNameUser string, err error) {
