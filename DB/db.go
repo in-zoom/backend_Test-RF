@@ -55,11 +55,11 @@ func AddNewUser(userName, EmailUser, PasswordUser string) (err error) {
 	return nil
 }
 
-func ListUsers(offset, limit string) ([]data.User, error) {
+func ListUsers(attribute, order, offset, limit string) ([]data.User, error) {
 	db = connect()
 	var rows *sql.Rows
 	//query := "SELECT * FROM the_users" + " " + offset + " " + limit
-	query := "SELECT id, user_name, email FROM the_users" + " " + offset + " " + limit
+	query := "SELECT id, user_name, email FROM the_users" + " " + attribute + " " + order + " " + offset + " " + limit
 	rows, err = db.Query(query)
 
 	if err != nil {
