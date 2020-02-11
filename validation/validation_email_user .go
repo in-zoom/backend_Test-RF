@@ -16,8 +16,7 @@ func ValidateEmailUser(EmailUser string, db *sql.DB) (resultEmailUser string, er
 		return "", errors.New("Введите E-mail")
 	}
 
-	//pattern := `^\w+@\w+\.\w+$`
-	pattern := `^[0-9A-Za-z]+@\w+\.\w+$`
+	pattern := `[a-zA-Z0-9_\-\.]+\@[a-z0-9\.\-]+`
 	matched, err := regexp.Match(pattern, []byte(addEmailUser))
 	if matched == false || err != nil {
 		return "", errors.New("Email введен неверно")

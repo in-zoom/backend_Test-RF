@@ -59,7 +59,6 @@ func GetListUsers(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 }
 
 func AddNewUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	//var addedUser User
 	addedUser := data.User{}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	err := json.NewDecoder(r.Body).Decode(&addedUser)

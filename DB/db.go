@@ -1,18 +1,18 @@
 package DB
 
 import (
+	"github.com/joho/godotenv"
 	"Backend_task_RF/data"
+  _ "github.com/lib/pq"
 	"database/sql"
 	"fmt"
 	"log"
 	"os"
-
-	"github.com/joho/godotenv"
-	_ "github.com/lib/pq"
 )
 
 var db *sql.DB
 var err error
+var rows *sql.Rows
 
 func Open() (*sql.DB, error) {
 	db = connect()
@@ -39,11 +39,39 @@ func connect() *sql.DB {
 }
 
 func createTable() (err error) {
-	ins := "CREATE TABLE IF NOT EXISTS the_users (id SERIAL, user_name VARCHAR, email VARCHAR, password VARCHAR); ALTER SEQUENCE the_users_id_seq RESTART WITH 123"
-	//sequence := "ALTER SEQUENCE the_users_id_seq RESTART WITH 123"
+	ins := "CREATE TABLE IF NOT EXISTS the_users (id SERIAL, user_name VARCHAR, email VARCHAR, password VARCHAR)"
 	_, err = db.Exec(ins)
 	if err != nil {
 		return err
+	}
+	counterSequenceId()
+	return nil
+
+}
+
+func counterSequenceId() error {
+	query := "Select last_value from the_users_id_seq"
+	rows, err = db.Query(query)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	var valueId int
+	for rows.Next() {
+		if err = rows.Scan(&valueId); err != nil {
+			return err
+		}
+	}
+	if err = rows.Err(); err != nil {
+		return err
+	}
+	if valueId == 1 {
+		ins := "ALTER SEQUENCE the_users_id_seq RESTART WITH 123"
+		_, err = db.Exec(ins)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -59,8 +87,6 @@ func AddNewUser(userName, EmailUser, PasswordUser string) (err error) {
 
 func ListUsers(attribute, order, offset, limit string) ([]data.User, error) {
 	db = connect()
-	var rows *sql.Rows
-	//query := "SELECT * FROM the_users" + " " + offset + " " + limit
 	query := "SELECT id, user_name, email FROM the_users" + " " + attribute + " " + order + " " + offset + " " + limit
 	rows, err = db.Query(query)
 
@@ -68,11 +94,10 @@ func ListUsers(attribute, order, offset, limit string) ([]data.User, error) {
 		return nil, err
 	}
 	defer rows.Close()
-	//user := data.User{}
+
 	list := make([]data.User, 0)
 	var user data.User
 	for rows.Next() {
-		//if err = rows.Scan(&user.Id, &user.Name, &user.Email, &user.Password); err != nil {
 		if err = rows.Scan(&user.Id, &user.Name, &user.Email); err != nil {
 			return nil, err
 		}
