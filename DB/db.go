@@ -1,13 +1,14 @@
 package DB
 
 import (
-	"github.com/joho/godotenv"
 	"Backend_task_RF/data"
-  _ "github.com/lib/pq"
 	"database/sql"
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
 
 var db *sql.DB
@@ -38,7 +39,8 @@ func connect() *sql.DB {
 }
 
 func createTable() (err error) {
-	ins := "CREATE TABLE IF NOT EXISTS the_users (id SERIAL, user_name VARCHAR, email VARCHAR, password VARCHAR)"
+	ins := "CREATE TABLE IF NOT EXISTS the_users (id SERIAL, user_name VARCHAR, email VARCHAR, password VARCHAR); ALTER SEQUENCE the_users_id_seq RESTART WITH 123"
+	//sequence := "ALTER SEQUENCE the_users_id_seq RESTART WITH 123"
 	_, err = db.Exec(ins)
 	if err != nil {
 		return err
