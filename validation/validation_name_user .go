@@ -16,7 +16,7 @@ func ValidateNameUser(UserName string) (resultNameUser string, err error) {
 	pattern := `^[A-Za-z]+$`
 	matched, err := regexp.Match(pattern, []byte(addUserName))
 	if matched == false || err != nil {
-		return "", errors.New("Имя не может содержать цифры, знаки пунктуации, символы ")
+		return "", errors.New("Имя не может содержать цифры, знаки пунктуации, символы, пробелы")
 	}
 	return addUserName, nil
 }

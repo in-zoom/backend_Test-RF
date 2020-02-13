@@ -1,11 +1,11 @@
 package DB
 
 import (
+	"github.com/joho/godotenv"
 	"Backend_task_RF/data"
+  _ "github.com/lib/pq"
 	"database/sql"
 	"fmt"
-	"github.com/joho/godotenv"
-	_ "github.com/lib/pq"
 	"log"
 	"os"
 )

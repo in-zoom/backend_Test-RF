@@ -2,9 +2,9 @@ package validation
 
 import (
 	"Backend_task_RF/DB"
+  _ "github.com/lib/pq"
 	"database/sql"
 	"errors"
-	_ "github.com/lib/pq"
 	"regexp"
 	"strings"
 )
@@ -78,13 +78,13 @@ func AuthorizationLogin(email string) (err error) {
 
 func prepareEmailUsre(imputEmailUser string) (outputEmailUser string, err error) {
 
-	if imputEmailUser == "" {
+	emailSpaceRemoval := strings.TrimSpace(imputEmailUser)
+
+	if emailSpaceRemoval == "" {
 		return "", errors.New("Введите E-mail")
 	}
 
-	emailSpaceRemoval := strings.TrimSpace(imputEmailUser)
-
-	pattern := `[a-zA-Z0-9_\-\.]+\@[a-z0-9\.\-]+`
+	pattern := `^\w+@\w+\.\w+$`
 	matched, err := regexp.Match(pattern, []byte(emailSpaceRemoval))
 	if matched == false || err != nil {
 		return "", errors.New("Email введен неверно")

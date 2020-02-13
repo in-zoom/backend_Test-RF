@@ -1,13 +1,13 @@
 package handlers
 
 import (
-	"Backend_task_RF/DB"
-	"Backend_task_RF/data"
-	"Backend_task_RF/validation"
-	"encoding/json"
-	"fmt"
 	"github.com/julienschmidt/httprouter"
+	"Backend_task_RF/validation"
+	"Backend_task_RF/data"
+	"Backend_task_RF/DB"
+	"encoding/json"
 	"net/http"
+	"fmt"
 )
 
 type errMessage struct {

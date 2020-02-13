@@ -1,8 +1,8 @@
 package validation
 
 import (
-	"strconv"
 	"errors"
+	"strconv"
 )
 
 func ValidateLimit(limit string) (resultLimit string, err error) {
@@ -25,6 +25,7 @@ func ValidateLimit(limit string) (resultLimit string, err error) {
 	}
 	return "", nil
 }
+
 func ValidateOffset(offset string) (resultOffset string, err error) {
 	if offset != "" {
 		offsetInt, err := strconv.Atoi(offset)

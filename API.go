@@ -1,12 +1,12 @@
 package main
 
 import (
-	"Backend_task_RF/handlers"
-	"Backend_task_RF/middleware"
-	"github.com/joho/godotenv"
 	"github.com/julienschmidt/httprouter"
-	"log"
+	"Backend_task_RF/middleware"
+	"Backend_task_RF/handlers"
+	"github.com/joho/godotenv"
 	"net/http"
+	"log"
 	"os"
 )
 

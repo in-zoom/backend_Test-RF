@@ -1,9 +1,9 @@
 package middleware
 
 import (
-	"Backend_task_RF/handlers"
-	"Backend_task_RF/validation"
 	"github.com/julienschmidt/httprouter"
+	"Backend_task_RF/validation"
+	"Backend_task_RF/handlers"
 	"net/http"
 )
 
