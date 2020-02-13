@@ -1,16 +1,21 @@
 package handlers
 
 import (
-	"github.com/julienschmidt/httprouter"
-	"Backend_task_RF/validation"
-	"Backend_task_RF/data"
 	"Backend_task_RF/DB"
+	"Backend_task_RF/data"
+	"Backend_task_RF/validation"
 	"encoding/json"
+	"fmt"
+	"github.com/julienschmidt/httprouter"
 	"net/http"
 )
 
 type errMessage struct {
 	Message string `json:"message"`
+}
+
+func Protected(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	fmt.Fprint(w, "Успешно выполнен вход!\n")
 }
 
 func GetListUsers(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -58,7 +63,7 @@ func GetListUsers(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	}
 }
 
-func AddNewUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func AddNewUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	addedUser := data.User{}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	err := json.NewDecoder(r.Body).Decode(&addedUser)
