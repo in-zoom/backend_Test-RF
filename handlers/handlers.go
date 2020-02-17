@@ -18,7 +18,7 @@ type errMessage struct {
 }
 
 func AddNewUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	addedUser := data.RegisterUse{}
+	addedUser := data.RegisterUser{}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	err := json.NewDecoder(r.Body).Decode(&addedUser)
 	if err != nil {
@@ -134,7 +134,7 @@ func GetListUsers(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 func UpdateUserPhoneNumber(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	id := r.Context().Value("user").(int)
-	userUpdate := data.RegisterUse{}
+	userUpdate := data.RegisterUser{}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	err := json.NewDecoder(r.Body).Decode(&userUpdate)
 	if err != nil {

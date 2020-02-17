@@ -1,10 +1,9 @@
 package validation
 
 import (
+	"github.com/stretchr/testify/assert"
 	"Backend_task_RF/validation"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestInvalidNumberFhoneIfEmpty(t *testing.T) {

@@ -38,7 +38,7 @@ func VerificationLogin(loginUser, passUser string) (int, error) {
 	}
 
 	row := db.QueryRow("SELECT id, email, password  FROM the_users WHERE email = $1", loginUser)
-	var dataUser data.RegisterUse
+	var dataUser data.RegisterUser
 	err = row.Scan(&dataUser.Id, &dataUser.Email, &dataUser.Password)
 	if err != nil {
 		return 0, err

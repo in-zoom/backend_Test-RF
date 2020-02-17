@@ -1,14 +1,13 @@
 package DB
 
 import (
+	"github.com/joho/godotenv"
 	"Backend_task_RF/data"
+	_ "github.com/lib/pq"
 	"database/sql"
 	"fmt"
 	"log"
 	"os"
-
-	"github.com/joho/godotenv"
-	_ "github.com/lib/pq"
 )
 
 var db *sql.DB
@@ -26,6 +25,7 @@ func connect() *sql.DB {
 	if e != nil {
 		fmt.Print(e)
 	}
+	
 	databaseURL := os.Getenv("DATABASE_URL")
 	db, err := sql.Open("postgres", databaseURL)
 	if err != nil {
@@ -45,9 +45,12 @@ func createTable() (err error) {
 	if err != nil {
 		return err
 	}
-	counterSequenceId()
+	
+	err = counterSequenceId()
+	if err != nil{
+		return err
+	}
 	return nil
-
 }
 
 func counterSequenceId() (err error) {

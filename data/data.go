@@ -4,7 +4,7 @@ import (
     jwt "github.com/dgrijalva/jwt-go"
 )
 
-type RegisterUse struct {
+type RegisterUser struct {
 	Id          int    `json:"id"`
 	Name        string `json:"name"`
 	Email       string `json:"email"`
