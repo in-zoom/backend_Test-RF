@@ -1,14 +1,25 @@
 package validation
 
 import (
-	"github.com/stretchr/testify/assert"
 	"Backend_task_RF/validation"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestValidNumberFhone(t *testing.T) {
-	imput := "892688233"
-	expectedResult := "892688233"
+func TestInvalidNumberFhoneIfEmpty(t *testing.T) {
+	imput := ""
+	expectedResult := ""
+	actualResult, err := validation.ValidatePhoneNumber(imput)
+	if err != nil {
+		t.Error()
+	}
+	assert.Equal(t, expectedResult, actualResult)
+}
+
+func TestValidNumberFhoneIfStringOfMultipleSpaces(t *testing.T) {
+	imput := "     "
+	expectedResult := ""
 	actualResult, err := validation.ValidatePhoneNumber(imput)
 	if err != nil {
 		t.Error()

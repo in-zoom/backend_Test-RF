@@ -1,13 +1,14 @@
 package DB
 
 import (
-	"github.com/joho/godotenv"
 	"Backend_task_RF/data"
-	_ "github.com/lib/pq"
 	"database/sql"
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
 
 var db *sql.DB
@@ -76,9 +77,9 @@ func counterSequenceId() (err error) {
 	return nil
 }
 
-func AddNewUser(userName, EmailUser, PasswordUser string) (err error) {
-	ins := "INSERT INTO the_users (user_name, email, password) VALUES ($1, $2, $3)"
-	_, err = db.Exec(ins, userName, EmailUser, PasswordUser)
+func AddNewUser(userName, EmailUser, PasswordUser, numberPhone string) (err error) {
+	ins := "INSERT INTO the_users (user_name, email, password, number_phone) VALUES ($1, $2, $3, $4)"
+	_, err = db.Exec(ins, userName, EmailUser, PasswordUser, numberPhone)
 	if err != nil {
 		return err
 	}
@@ -93,9 +94,9 @@ func UpdatePhoneNumber(NumberPhone string, id int) (err error) {
 	return nil
 }
 
-func ListUsers(attribute, order, offset, limit string) ([]data.User, error) {
+func ListUsers(attribute, order, offset, limit string) ([]data.ListUser, error) {
 	db = connect()
-	query := "SELECT id, user_name, email FROM the_users" + " " + attribute + " " + order + " " + offset + " " + limit
+	query := "SELECT id, user_name, email, number_phone FROM the_users" + " " + attribute + " " + order + " " + offset + " " + limit
 	rows, err = db.Query(query)
 
 	if err != nil {
@@ -103,15 +104,15 @@ func ListUsers(attribute, order, offset, limit string) ([]data.User, error) {
 	}
 	defer rows.Close()
 
-	list := make([]data.User, 0)
-	var user data.User
+	list := make([]data.ListUser, 0)
+	var user data.ListUser
 	for rows.Next() {
-		if err = rows.Scan(&user.Id, &user.Name, &user.Email); err != nil {
+		if err = rows.Scan(&user.Id, &user.Name, &user.Email, &user.PhoneNumber); err != nil {
 			return nil, err
 		}
 		list = append(list, user)
 	}
-	
+
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}

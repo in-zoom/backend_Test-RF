@@ -18,7 +18,7 @@ type errMessage struct {
 }
 
 func AddNewUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	addedUser := data.User{}
+	addedUser := data.RegisterUse{}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	err := json.NewDecoder(r.Body).Decode(&addedUser)
 	if err != nil {
@@ -45,13 +45,18 @@ func AddNewUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	resultPasswordUser, err := validation.ValidatePasswordUsers(addedUser.Password)
 	hashPasswordUser, _ := hashing.HashPasswordUser(resultPasswordUser)
-	
 	if err != nil {
 		ResponseError(w, 400, err)
 		return
 	}
 
-	err = DB.AddNewUser(resultNameUser, resultEmailUser, hashPasswordUser)
+	resultPhoneNumber, err := validation.ValidatePhoneNumber(addedUser.PhoneNumber)
+	if err != nil {
+		ResponseError(w, 400, err)
+		return
+	}
+
+	err = DB.AddNewUser(resultNameUser, resultEmailUser, hashPasswordUser, resultPhoneNumber)
 	if err != nil {
 		ResponseError(w, 500, err)
 		return
@@ -129,7 +134,7 @@ func GetListUsers(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 func UpdateUserPhoneNumber(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	id := r.Context().Value("user").(int)
-	userUpdate := data.User{}
+	userUpdate := data.RegisterUse{}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	err := json.NewDecoder(r.Body).Decode(&userUpdate)
 	if err != nil {

@@ -9,8 +9,8 @@ import (
 func ValidatePhoneNumber(PhoneNumber string) (prepareNumberPhone string, err error) {
 	preparePhoneNumber := preparePhoneNumber(PhoneNumber)
 
-	if preparePhoneNumber == "" {
-		return "", errors.New("Введите номер телефона")
+	if len(preparePhoneNumber) == 0 {
+		return "", nil
 	}
 
 	pattern := `^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$`

@@ -23,14 +23,4 @@ func TestInvalidNumberFhone(t *testing.T) {
 	}
 }
 
-func TestInvalidNumberFhoneIfEmpty(t *testing.T) {
-	imput := []string{"", " ", "     "}
-	for _, imputCurrentItem := range imput {
-		expectedResult := "Введите номер телефона"
-		_, err := validation.ValidatePhoneNumber(imputCurrentItem)
-		if err != nil {
-			t.Error()
-		}
-		assert.Equal(t, expectedResult, err)
-	}
-}
+
