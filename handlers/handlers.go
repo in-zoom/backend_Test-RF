@@ -2,20 +2,83 @@ package handlers
 
 import (
 	"github.com/julienschmidt/httprouter"
+	jwt "github.com/dgrijalva/jwt-go"
+	"Backend_task_RF/verification"
 	"Backend_task_RF/validation"
+	"Backend_task_RF/hashing"
 	"Backend_task_RF/data"
 	"Backend_task_RF/DB"
 	"encoding/json"
 	"net/http"
-	"fmt"
+	"os"
 )
 
 type errMessage struct {
 	Message string `json:"message"`
 }
 
-func Protected(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	fmt.Fprint(w, "Успешно выполнен вход!\n")
+func AddNewUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	addedUser := data.User{}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err := json.NewDecoder(r.Body).Decode(&addedUser)
+	if err != nil {
+		ResponseError(w, 400, err)
+		return
+	}
+
+	db, err := DB.Open()
+	if err != nil {
+		ResponseError(w, 500, err)
+		return
+	}
+	resultNameUser, err := validation.ValidateNameUser(addedUser.Name)
+	if err != nil {
+		ResponseError(w, 400, err)
+		return
+	}
+
+	resultEmailUser, err := validation.ValidateEmailUser(addedUser.Email, db)
+	if err != nil {
+		ResponseError(w, 400, err)
+		return
+	}
+
+	resultPasswordUser, err := validation.ValidatePasswordUsers(addedUser.Password)
+	hashPasswordUser, _ := hashing.HashPasswordUser(resultPasswordUser)
+	
+	if err != nil {
+		ResponseError(w, 400, err)
+		return
+	}
+
+	err = DB.AddNewUser(resultNameUser, resultEmailUser, hashPasswordUser)
+	if err != nil {
+		ResponseError(w, 500, err)
+		return
+	}
+
+}
+
+func Login(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	auth := data.Auth{}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err := json.NewDecoder(r.Body).Decode(&auth)
+	if err != nil {
+		ResponseError(w, 400, err)
+		return
+	}
+
+	userid, err := verification.VerificationLogin(auth.Username, auth.Password)
+    if err != nil {
+		ResponseError(w, 400, err)
+		return
+	}
+	
+	tk := &data.Token{UserId: userid}
+	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
+	tokenString, _ := token.SignedString([]byte(os.Getenv("token_password")))
+	w.Header().Set("Authorization", "Bearer " + tokenString)
+	w.WriteHeader(200)
 }
 
 func GetListUsers(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -34,76 +97,61 @@ func GetListUsers(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	resultAttribute, err := validation.ValidateAttribute(attribute)
 	if err != nil {
-		responseError(w, 400, err)
+		ResponseError(w, 400, err)
 		return
 	}
 	resultOrder, err := validation.ValidateOrder(order)
 	if err != nil {
-		responseError(w, 400, err)
+		ResponseError(w, 400, err)
 		return
 	}
 
 	resultOffset, err := validation.ValidateOffset(offset)
 	if err != nil {
-		responseError(w, 400, err)
+		ResponseError(w, 400, err)
 		return
 	}
+	
 	resultLimit, err := validation.ValidateLimit(limit)
 	if err != nil {
-		responseError(w, 400, err)
+		ResponseError(w, 400, err)
 		return
 	}
 	resultListUsers, err := DB.ListUsers(resultAttribute, resultOrder, resultOffset, resultLimit)
 	if err != nil {
-		responseError(w, 500, err)
+		ResponseError(w, 500, err)
 		return
 	}
 	if err = json.NewEncoder(w).Encode(resultListUsers); err != nil {
-		responseError(w, 500, err)
+		ResponseError(w, 500, err)
 	}
 }
 
-func AddNewUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	addedUser := data.User{}
+func UpdateUserPhoneNumber(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	id := r.Context().Value("user").(int)
+	userUpdate := data.User{}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	err := json.NewDecoder(r.Body).Decode(&addedUser)
+	err := json.NewDecoder(r.Body).Decode(&userUpdate)
 	if err != nil {
-		responseError(w, 400, err)
+		ResponseError(w, 400, err)
+		return
+	}
+	
+	resultPhoneNumber, err := validation.ValidatePhoneNumber(userUpdate.PhoneNumber)
+	if err != nil {
+		ResponseError(w, 400, err)
 		return
 	}
 
-	db, err := DB.Open()
+	err = DB.UpdatePhoneNumber(resultPhoneNumber, id)
 	if err != nil {
-		responseError(w, 500, err)
-		return
-	}
-	resultNameUser, err := validation.ValidateNameUser(addedUser.Name)
-	if err != nil {
-		responseError(w, 400, err)
-		return
-	}
-
-	resultEmailUser, err := validation.ValidateEmailUser(addedUser.Email, db)
-	if err != nil {
-		responseError(w, 400, err)
-		return
-	}
-
-	resultPasswordUser, err := validation.ValidatePasswordUsers(addedUser.Password)
-	if err != nil {
-		responseError(w, 400, err)
-		return
-	}
-
-	err = DB.AddNewUser(resultNameUser, resultEmailUser, resultPasswordUser)
-	if err != nil {
-		responseError(w, 500, err)
+		ResponseError(w, 500, err)
 		return
 	}
 
 }
 
-func responseError(w http.ResponseWriter, code int, err error) {
+func ResponseError(w http.ResponseWriter, code int, err error) {
 	w.WriteHeader(code)
 	errMessage := errMessage{err.Error()}
 	json.NewEncoder(w).Encode(errMessage)

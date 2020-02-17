@@ -1,6 +1,7 @@
 package validation
 
 import (
+	"Backend_task_RF/DB"
 	"errors"
 	"strconv"
 )
@@ -11,19 +12,25 @@ func ValidateLimit(limit string) (resultLimit string, err error) {
 		if err != nil {
 			return "", errors.New("Задано некорректное значение")
 		}
-		if limitInt >= 0 {
-			if limitInt != 0 {
-				if limitInt > 27 {
-					return "limit" + " " + strconv.Itoa(27), nil
-				} else {
-					return "limit" + " " + limit, nil
-				}
-			}
+		if limitInt < 0 {
+			return "", errors.New("Значение не может быть отрицательным")
+		} else if limitInt == 0 {
 			return "", errors.New("Значение не может быть нулевым")
 		}
-		return "", errors.New("Значение не может быть отрицательным")
+		
+		numberOfRecords, err := gettingNumberOfRecords()
+		if err != nil{
+			return "", err	
+			}
+
+		if limitInt > numberOfRecords {
+		   return "limit" + " " + strconv.Itoa(numberOfRecords), nil
+		} else {
+			return "limit" + " " + limit, nil
+		}
+		return "", nil
 	}
-	return "", nil
+    return "", nil
 }
 
 func ValidateOffset(offset string) (resultOffset string, err error) {
@@ -32,14 +39,49 @@ func ValidateOffset(offset string) (resultOffset string, err error) {
 		if err != nil {
 			return "", errors.New("Задано некорректное значение")
 		}
-		if offsetInt >= 0 {
-			if offsetInt > 26 {
-				return "offset" + " " + strconv.Itoa(26), nil
-			} else {
-				return "offset" + " " + offset, nil
-			}
+		
+		if offsetInt < 0 {
+		   return "", errors.New("Значение не может быть отрицательным")
 		}
-		return "", errors.New("Значение не может быть отрицательным")
+
+		numberOfRecords, err := gettingNumberOfRecords()
+		if err != nil{
+		   return "", err	
+		}
+		
+		if offsetInt > numberOfRecords {
+		   return "offset" + " " + strconv.Itoa((numberOfRecords - 1)), nil
+		} else {
+		    return "offset" + " " + offset, nil
+		}
+		return "", nil
 	}
 	return "", nil
+}
+
+func gettingNumberOfRecords()(numbeOfRecords int, err error){
+	
+	db, err := DB.Open()
+	if err != nil {
+		return 0, err
+	}
+	
+	query := "SELECT count(*) FROM the_users tu "
+	rows, err := db.Query(query)
+	if err != nil {
+		return 0, err
+	}
+	defer rows.Close()
+
+	var numberOfRecords int
+	for rows.Next() {
+		if err = rows.Scan(&numberOfRecords); err != nil {
+			return 0, err
+		}
+	}
+	
+	if err = rows.Err(); err != nil {
+		return 0, err
+	}
+	return numberOfRecords, nil
 }

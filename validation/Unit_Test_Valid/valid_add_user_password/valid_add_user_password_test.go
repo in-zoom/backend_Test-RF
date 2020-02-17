@@ -2,18 +2,47 @@ package validation
 
 import (
 	"github.com/stretchr/testify/assert"
-	"Backend_task_5/validation"
+	"Backend_task_RF/validation"
 	"testing"
 )
 
-func TestValidUserPassword(t *testing.T) {
-	inputPassword := []string{"123456", "1a2b3c4@5&6", "    A1x2345y6", "      s1w23456sdf34!          "}
-	expectedResult := ""
-	for _, currentPassword := range inputPassword {
-		resultPassword, err := validation.ValidateColor(currentPassword)
-		if err != nil {
-			t.Error()
-		}
-		assert.Equal(t, resultPassword, expectedResult)
-    }
+func TestValidUserPasswordOnlyNumbers(t *testing.T) {
+	inputPassword := "1234561234"
+	expectedResult := "1234561234"
+	resultPassword, err := validation.ValidatePasswordUsers(inputPassword)
+	if err != nil {
+		t.Error()
+	}
+	assert.Equal(t, resultPassword, expectedResult)
+}
+
+func TestValidUserPasswordOnlyLetters(t *testing.T) {
+	inputPassword := "QwErTyuioP"
+	expectedResult := "QwErTyuioP"
+	resultPassword, err := validation.ValidatePasswordUsers(inputPassword)
+	if err != nil {
+		t.Error()
+	}
+	assert.Equal(t, resultPassword, expectedResult)
+}
+
+func TestValidUserPasswordNumbersAndLettersDashSign(t *testing.T) {
+	inputPassword := "-1x2345y6"
+	expectedResult := "-1x2345y6"
+	resultPassword, err := validation.ValidatePasswordUsers(inputPassword)
+	if err != nil {
+		t.Error()
+	}
+	assert.Equal(t, resultPassword, expectedResult)
+}
+
+func TestValidUserPasswordNumbersAndLetters(t *testing.T) {
+	inputPassword := "      s1w23456sdf34          "
+	expectedResult := "s1w23456sdf34"
+
+	resultPassword, err := validation.ValidatePasswordUsers(inputPassword)
+	if err != nil {
+		t.Error()
+	}
+	assert.Equal(t, resultPassword, expectedResult)
 }

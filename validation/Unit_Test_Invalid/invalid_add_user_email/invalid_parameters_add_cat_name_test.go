@@ -15,9 +15,9 @@ func TestInvalidIfEmailUserExists(t *testing.T) {
 	defer db.Close()
 
 	var input = []string{
-		"Alexey@mail.ru", 
-		"Alexey@mail.ru", 
-		"  Alexey@mail.ru", 
+		"Alexey@mail.ru",
+		"Alexey@mail.ru",
+		"  Alexey@mail.ru",
 		"   Alexey@mail.ru       "}
 
 	expectedResult := "Пользователь с Email - Alexey@mail.ru уже зарегистрирован"
@@ -26,7 +26,7 @@ func TestInvalidIfEmailUserExists(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"email"}).AddRow("Alexey@mail.ru")
 		mock.ExpectQuery("SELECT email FROM the_users WHERE email = " + " " + "'" + "Alexey@mail.ru" + "'").WillReturnRows(rows)
 		_, err := validation.ValidateEmailUser(currentName, db)
-		
+
 		if err != nil {
 			t.Error()
 		}

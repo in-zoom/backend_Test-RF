@@ -7,8 +7,14 @@ import (
 )
 
 func TestInvalidUserPassword(t *testing.T) {
-	inputPassword := []string{"1", "1a2b3", "    A123", "      s1w!          "}
-	expectedResult := "Пароль должен состоять хотя бы из 6 символов"
+	inputPassword := []string{
+		"      eqrtreyeys1w!  ",
+		"ADCE&WUewqi",
+		"jshfaj;lda",
+		" Qw@rtuYoiM ", 
+		"    A123g", 
+		"1d"}
+	expectedResult := "Пароль должен состоять хотя бы из 6 символов, может содержать буквы, цифры, знаки -, _"
 	for _, currentPassword := range inputPassword {
 		_, err := validation.ValidatePasswordUsers(currentPassword)
 		if err != nil {

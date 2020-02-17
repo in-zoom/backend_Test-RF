@@ -69,54 +69,10 @@ func TestIfLimitEqualEmpty(t *testing.T) {
 	}
 	assert.Equal(t, expectedResult, actualResult)
 }
-func TestIfLimitEqualOne(t *testing.T) {
-	input := "1"
-	expectedResult := "limit 1"
-	actualResult, err := validation.ValidateLimit(input)
-	if err != nil {
-		t.Error()
-	}
-	assert.Equal(t, expectedResult, actualResult)
-}
-func TestIfLimitEqualOneHundred(t *testing.T) {
-	input := "100"
-	expectedResult := "limit 27"
-	actualResult, err := validation.ValidateLimit(input)
-	if err != nil {
-		t.Error()
-	}
-	assert.Equal(t, expectedResult, actualResult)
-}
+
 func TestIfOffsetEqualEmpty(t *testing.T) {
 	input := ""
 	expectedResult := ""
-	actualResult, err := validation.ValidateOffset(input)
-	if err != nil {
-		t.Error()
-	}
-	assert.Equal(t, expectedResult, actualResult)
-}
-func TestIfOffsetEqualZero(t *testing.T) {
-	input := "0"
-	expectedResult := "offset 0"
-	actualResult, err := validation.ValidateOffset(input)
-	if err != nil {
-		t.Error()
-	}
-	assert.Equal(t, expectedResult, actualResult)
-}
-func TestIfOffsetEqualTwentySix(t *testing.T) {
-	input := "26"
-	expectedResult := "offset 26"
-	actualResult, err := validation.ValidateOffset(input)
-	if err != nil {
-		t.Error()
-	}
-	assert.Equal(t, expectedResult, actualResult)
-}
-func TestIfOffsetEqualOneHundred(t *testing.T) {
-	input := "100"
-	expectedResult := "offset 26"
 	actualResult, err := validation.ValidateOffset(input)
 	if err != nil {
 		t.Error()

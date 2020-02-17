@@ -3,7 +3,7 @@ package DB
 import (
 	"github.com/joho/godotenv"
 	"Backend_task_RF/data"
-  _ "github.com/lib/pq"
+	_ "github.com/lib/pq"
 	"database/sql"
 	"fmt"
 	"log"
@@ -39,7 +39,7 @@ func connect() *sql.DB {
 }
 
 func createTable() (err error) {
-	ins := "CREATE TABLE IF NOT EXISTS the_users (id SERIAL, user_name VARCHAR, email VARCHAR, password VARCHAR)"
+	ins := "CREATE TABLE IF NOT EXISTS the_users (id SERIAL, user_name VARCHAR, email VARCHAR, number_phone VARCHAR, password VARCHAR)"
 	_, err = db.Exec(ins)
 	if err != nil {
 		return err
@@ -49,8 +49,8 @@ func createTable() (err error) {
 
 }
 
-func counterSequenceId() error {
-	query := "Select last_value from the_users_id_seq"
+func counterSequenceId() (err error) {
+	query := "SELECT last_value FROM the_users_id_seq"
 	rows, err = db.Query(query)
 	if err != nil {
 		return err
@@ -85,6 +85,14 @@ func AddNewUser(userName, EmailUser, PasswordUser string) (err error) {
 	return nil
 }
 
+func UpdatePhoneNumber(NumberPhone string, id int) (err error) {
+	_, err = db.Exec("UPDATE the_users SET number_phone = $1 where id = $2", NumberPhone, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func ListUsers(attribute, order, offset, limit string) ([]data.User, error) {
 	db = connect()
 	query := "SELECT id, user_name, email FROM the_users" + " " + attribute + " " + order + " " + offset + " " + limit
@@ -103,6 +111,7 @@ func ListUsers(attribute, order, offset, limit string) ([]data.User, error) {
 		}
 		list = append(list, user)
 	}
+	
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
