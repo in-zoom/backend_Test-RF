@@ -22,6 +22,6 @@ func main() {
 	router.POST("/login", handlers.Login)
 	router.GET("/users", middleware.AuthCheckMiddleware(middleware.UsersListHandler()))
 	router.PUT("/update", middleware.AuthCheckMiddleware(middleware.UpdateUserHandler()))
-	port, _ := os.LookupEnv("PORT")
+	port := os.Getenv("PORT")
 	log.Fatal(http.ListenAndServe(port, router))
 }
