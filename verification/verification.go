@@ -1,11 +1,10 @@
 package verification
 
 import (
-	"Backend_task_RF/validation"
-	"Backend_task_RF/hashing"
+	"Backend_task_RF/DB"
 	"Backend_task_RF/data"
-	_ "github.com/lib/pq"
-	 "Backend_task_RF/DB"
+	"Backend_task_RF/hashing"
+	"Backend_task_RF/validation"
 	"errors"
 	"regexp"
 )
