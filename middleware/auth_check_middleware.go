@@ -35,7 +35,7 @@ func AuthCheckMiddleware(next httprouter.Handle) httprouter.Handle {
 		tk := &data.Token{}
 
 		token, err := jwt.ParseWithClaims(tokenPart, tk, func(token *jwt.Token) (interface{}, error) {
-			return []byte(os.Getenv("token_password")), nil
+			return []byte(os.Getenv("TOKEN_PASSWORD")), nil
 		})
 
 		if err != nil { 

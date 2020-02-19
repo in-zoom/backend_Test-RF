@@ -12,7 +12,7 @@ func HashPasswordUser(password string) (hashPassword string, err error) {
 	if err != nil {
 		return "", err
 	}
-	salt := md5.Sum([]byte(os.Getenv("salt")))
+	salt := md5.Sum([]byte(os.Getenv("SALT")))
 	saltHash := hex.EncodeToString(salt[:])
 	hashPasswordSalt := password + saltHash
 
