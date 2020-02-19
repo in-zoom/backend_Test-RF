@@ -10,13 +10,14 @@ import (
 	"os"
 )
 
-func init() {
+func Init() {
 	if err := godotenv.Load(); err != nil {
 		log.Print("Файл .env не найден")
 	}
 }
 
 func main() {
+	Init()
 	router := httprouter.New()
 	router.POST("/registration", handlers.AddNewUser)
 	router.POST("/login", handlers.Login)
