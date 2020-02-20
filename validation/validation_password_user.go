@@ -7,11 +7,8 @@ import (
 )
 
 func ValidatePasswordUsers(addPassword string) (resultPasswordUser string, err error) {
-	PasswordPrepare, err := PreparePassword(addPassword)
-	if err != nil {
-		return "", err
-	}
-
+	PasswordPrepare := PreparePassword(addPassword)
+	
 	if PasswordPrepare == "" {
 		return "", errors.New("Не задан пароль")
 	}
@@ -24,7 +21,7 @@ func ValidatePasswordUsers(addPassword string) (resultPasswordUser string, err e
     return PasswordPrepare, nil
 }
 
-func PreparePassword(imputPassword string) (outputPassword string, err error) {
+func PreparePassword(imputPassword string) (outputPassword string) {
 	passwordSpaceRemoval := strings.TrimSpace(imputPassword)
-    return passwordSpaceRemoval, nil
+    return passwordSpaceRemoval
 }

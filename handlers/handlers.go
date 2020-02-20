@@ -72,8 +72,9 @@ func Login(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		ResponseError(w, 400, err)
 		return
 	}
-
-	userid, err := verification.VerificationLogin(auth.Username, auth.Password)
+	
+	db := DB.Connect()
+	userid, err := verification.VerificationLogin(auth.Username, auth.Password, db)
     if err != nil {
 		ResponseError(w, 400, err)
 		return

@@ -15,12 +15,12 @@ var err error
 var rows *sql.Rows
 
 func Open() (*sql.DB, error) {
-	db = connect()
+	db = Connect()
 	err = createTable()
 	return db, err
 }
 
-func connect() *sql.DB {
+func Connect() *sql.DB {
 	e := godotenv.Load(".env") //Загрузить файл .env
 	if e != nil {
 		fmt.Print(e)
@@ -98,7 +98,7 @@ func UpdatePhoneNumber(NumberPhone string, id int) (err error) {
 }
 
 func ListUsers(attribute, order, offset, limit string) ([]data.ListUser, error) {
-	db = connect()
+	db = Connect()
 	query := "SELECT id, user_name, email, number_phone FROM the_users" + " " + attribute + " " + order + " " + offset + " " + limit
 	rows, err = db.Query(query)
 
