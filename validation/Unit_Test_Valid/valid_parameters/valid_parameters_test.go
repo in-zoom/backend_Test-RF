@@ -2,6 +2,7 @@ package validation
 
 import (
 	"github.com/stretchr/testify/assert"
+	"github.com/DATA-DOG/go-sqlmock"
 	"Backend_task_RF/validation"
 	"testing"
 )
@@ -60,10 +61,107 @@ func TestSortingEmpty(t *testing.T) {
 	}
 	assert.Equal(t, expectedResult, actualResult)
 }
+
+func TestValidIfTheLimitIsGreaterThanTheNumberOfEntriesInTheTable(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Errorf("An error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
+	input := "100"
+	expectedResult := "limit 3"
+	rows := sqlmock.NewRows([]string{"id"}).AddRow(3)
+	mock.ExpectQuery("SELECT").WillReturnRows(rows)
+	actualResult, err := validation.ValidateLimit(input, db)
+	if err != nil {
+		t.Error()
+	}
+	assert.Equal(t, expectedResult, actualResult)
+}
+
+func TestValidIfTheLimitIsLessThanOrEqualToTheNumberOfEntriesInTheTable(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Errorf("An error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
+	input := "2"
+	expectedResult := "limit 2"
+	rows := sqlmock.NewRows([]string{"id"}).AddRow(3)
+	mock.ExpectQuery("SELECT").WillReturnRows(rows)
+	actualResult, err := validation.ValidateLimit(input, db)
+	if err != nil {
+		t.Error()
+	}
+	assert.Equal(t, expectedResult, actualResult)
+}
+
 func TestIfLimitEqualEmpty(t *testing.T) {
+	db, _, err := sqlmock.New()
+	if err != nil {
+		t.Errorf("An error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
 	input := ""
 	expectedResult := ""
-	actualResult, err := validation.ValidateLimit(input)
+	actualResult, err := validation.ValidateLimit(input, db)
+	if err != nil {
+		t.Error()
+	}
+	assert.Equal(t, expectedResult, actualResult)
+}
+
+func TestValidIfTheOffsetIsGreaterThanTheNumberOfEntriesInTheTable(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Errorf("An error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
+	input := "100"
+	expectedResult := "offset 2"
+	rows := sqlmock.NewRows([]string{"id"}).AddRow(3)
+	mock.ExpectQuery("SELECT").WillReturnRows(rows)
+	actualResult, err := validation.ValidateOffset(input, db)
+	if err != nil {
+		t.Error()
+	}
+	assert.Equal(t, expectedResult, actualResult)
+}
+
+func TestValidIfTheOffsetIsEqualToTheNumberOfEntriesInTheTable(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Errorf("An error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
+	input := "3"
+	expectedResult := "offset 2"
+	rows := sqlmock.NewRows([]string{"id"}).AddRow(3)
+	mock.ExpectQuery("SELECT").WillReturnRows(rows)
+	actualResult, err := validation.ValidateOffset(input, db)
+	if err != nil {
+		t.Error()
+	}
+	assert.Equal(t, expectedResult, actualResult)
+}
+
+func TestValidIfUserEnteredOffsetZero(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Errorf("An error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
+	input := "0"
+	expectedResult := "offset 0"
+	rows := sqlmock.NewRows([]string{"id"}).AddRow(2)
+	mock.ExpectQuery("SELECT").WillReturnRows(rows)
+	actualResult, err := validation.ValidateOffset(input, db)
 	if err != nil {
 		t.Error()
 	}
@@ -71,9 +169,15 @@ func TestIfLimitEqualEmpty(t *testing.T) {
 }
 
 func TestIfOffsetEqualEmpty(t *testing.T) {
+	db, _, err := sqlmock.New()
+	if err != nil {
+		t.Errorf("An error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+	
 	input := ""
 	expectedResult := ""
-	actualResult, err := validation.ValidateOffset(input)
+	actualResult, err := validation.ValidateOffset(input, db)
 	if err != nil {
 		t.Error()
 	}

@@ -31,6 +31,7 @@ func AddNewUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		ResponseError(w, 500, err)
 		return
 	}
+	
 	resultNameUser, err := validation.ValidateNameUser(addedUser.Name)
 	if err != nil {
 		ResponseError(w, 400, err)
@@ -73,8 +74,8 @@ func Login(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		return
 	}
 	
-	db := DB.Connect()
-	userid, err := verification.VerificationLogin(auth.Username, auth.Password, db)
+	//db := DB.Connect()
+	userid, err := verification.VerificationLogin(auth.Username, auth.Password, DB.Connect())
     if err != nil {
 		ResponseError(w, 400, err)
 		return
@@ -111,14 +112,14 @@ func GetListUsers(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		ResponseError(w, 400, err)
 		return
 	}
-
-	resultOffset, err := validation.ValidateOffset(offset)
+	//db := DB.Connect()
+	resultOffset, err := validation.ValidateOffset(offset, DB.Connect())
 	if err != nil {
 		ResponseError(w, 400, err)
 		return
 	}
 	
-	resultLimit, err := validation.ValidateLimit(limit)
+	resultLimit, err := validation.ValidateLimit(limit, DB.Connect())
 	if err != nil {
 		ResponseError(w, 400, err)
 		return
