@@ -1,7 +1,6 @@
 package DB
 
 import (
-	"github.com/joho/godotenv"
 	 _ "github.com/lib/pq"
 	"Backend_task_RF/data"
 	"database/sql"
@@ -21,11 +20,6 @@ func Open() (*sql.DB, error) {
 }
 
 func Connect() *sql.DB {
-	e := godotenv.Load(".env") //Загрузить файл .env
-	if e != nil {
-		fmt.Print(e)
-	}
-
 	databaseURL := os.Getenv("DATABASE_URL")
 	db, err := sql.Open("postgres", databaseURL)
 	if err != nil {
