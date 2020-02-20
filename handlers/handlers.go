@@ -82,7 +82,7 @@ func Login(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	tk := &data.Token{UserId: userid}
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
-	tokenString, _ := token.SignedString([]byte(os.Getenv("token_password")))
+	tokenString, _ := token.SignedString([]byte(os.Getenv("TOKEN_PASSWORD")))
 	w.Header().Set("Authorization", "Bearer " + tokenString)
 	w.WriteHeader(200)
 }
